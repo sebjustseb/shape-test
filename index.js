@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 const { Circle, Triangle, Square } = require('./lib/shapes');
+const SVG = require('./lib/svg');
 
 inquirer
   .prompt([
@@ -41,16 +42,13 @@ inquirer
         break;
     }
 
-    const shapeRendering = shape.render();
+    const svg = new SVG();
+    svg.setText(answers.text, answers.textColor);
+    svg.setShape(shape);
 
-    const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="300" height="200">
-        ${shapeRendering}
-        <text x="150" y="100" font-size="60" text-anchor="middle" fill="${answers.textColor}">${answers.text}</text>
-      </svg>
-    `;
+    const svgContent = svg.render();
 
-    fs.writeFileSync('logo.svg', svg);
+    fs.writeFileSync('logo.svg', svgContent);
 
     console.log('Generated logo.svg');
   })
